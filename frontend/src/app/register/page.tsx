@@ -5,18 +5,45 @@ import Link from 'next/link';
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
+    phone: '+79991234567', // Добавляем телефон
     email: '',
-    fullName: '',
+    full_name: '', // Меняем fullName на full_name
     username: '',
     password: '',
+    password_confirm: '' // Добавляем подтверждение пароля
   });
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Register attempt:', formData);
-    // Здесь будет логика регистрации
-  };
+    setLoading(true);
+    setMessage('');
+    try{
+        const response = await fetch('http://localhost:3001/api/auth/register',{
+            method:"POST",
+            headers:{
+                 'Content-Type': 'application/json',
+            },
+            body:JSON.stringify(formData)
+        });
+        const data = await response.json();
+        if(response.ok){
+            setMessage('✅ Регистрация успешна!');
+            console.log('User registered:', data.user);
+        // Здесь можно сделать redirect на логин
+        }else{
+            setMessage(`❌ Ошибка: ${data.error || data.details || 'Неизвестная ошибка'}`)
+        }
+    }catch(error){
+        setMessage('❌ Ошибка подключения к серверу');
+        console.error('Registration error:', error);
+    }finally{
+        setLoading(false);
+    }
+}
 
+      
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
@@ -31,13 +58,34 @@ export default function RegisterPage() {
           {/* Логотип */}
           <div className="text-center mb-6">
             <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
-              Instagram
+              Umeeti
             </h1>
-            <p className="text-gray-600 mt-2 text-sm">Зарегистрируйтесь, чтобы смотреть фото и видео ваших друзей.</p>
+            <p className="text-gray-600 mt-2 text-sm">Зарегистрируйтесь, чтобы найти свою половинку</p>
           </div>
+
+          {/* Сообщение об ошибке/успехе */}
+          {message && (
+            <div className={`mb-4 p-3 rounded text-sm ${
+              message.includes('✅') ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+            }`}>
+              {message}
+            </div>
+          )}
 
           {/* Форма регистрации */}
           <form className="space-y-3" onSubmit={handleSubmit}>
+            <div>
+              <input
+                name="phone"
+                type="tel"
+                required
+                placeholder="Телефон (+79991234567)"
+                value={formData.phone}
+                onChange={handleChange}
+                className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-50"
+              />
+            </div>
+
             <div>
               <input
                 name="email"
@@ -52,11 +100,11 @@ export default function RegisterPage() {
 
             <div>
               <input
-                name="fullName"
+                name="full_name"
                 type="text"
                 required
                 placeholder="Имя и фамилия"
-                value={formData.fullName}
+                value={formData.full_name}
                 onChange={handleChange}
                 className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-50"
               />
@@ -86,17 +134,29 @@ export default function RegisterPage() {
               />
             </div>
 
+            <div>
+              <input
+                name="password_confirm"
+                type="password"
+                required
+                placeholder="Повторите пароль"
+                value={formData.password_confirm}
+                onChange={handleChange}
+                className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-50"
+              />
+            </div>
+
             <div className="text-xs text-gray-500 text-center pt-2">
-              <p>Регистрируясь, вы принимаете наши Условия, Политику конфиденциальности и Политику в отношении файлов cookie.</p>
+              <p>Регистрируясь, вы принимаете наши Условия и Политику конфиденциальности.</p>
             </div>
 
             <div className="pt-2">
               <button
                 type="submit"
+                disabled={loading || !formData.email || !formData.full_name || !formData.username || !formData.password || !formData.password_confirm}
                 className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                disabled={!formData.email || !formData.fullName || !formData.username || !formData.password}
               >
-                Регистрация
+                {loading ? 'Регистрация...' : 'Регистрация'}
               </button>
             </div>
           </form>

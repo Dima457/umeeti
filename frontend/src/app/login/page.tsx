@@ -2,18 +2,54 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
-    username: '',
+    login: '', // Меняем username на login (для нашего API)
     password: '',
   });
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
+  const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Login attempt:', formData);
-    // Здесь будет логика входа
+    setLoading(true);
+    setMessage("");
+    try{
+        const response = await fetch('http://localhost:3001/api/auth/login',{
+            method:"POST",
+            headers:{
+                'Content-Type':'application/json'
+            },
+            body:JSON.stringify(formData),
+        });
+        const data = await response.json();
+
+        if(response.ok){
+             setMessage('✅ Вход успешен!');
+            console.log('Login successful:', data.user);
+            //* Сохраняем токен в localStorage
+            if(data.token){
+                localStorage.setItem('auth-token',data.token);
+                localStorage.setItem('user', JSON.stringify(data.user));
+            }
+            //* Редирект на главную страницу через 1 секунду
+            setTimeout(()=>{
+                router.push('/')
+            },1000);
+        }else {
+        setMessage(`❌ Ошибка: ${data.error || 'Неверные данные для входа'}`);
+      }
+    } catch (error) {
+      setMessage('❌ Ошибка подключения к серверу');
+      console.error('Login error:', error);
+    } finally {
+      setLoading(false);
+    }
   };
+    
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -29,19 +65,28 @@ export default function LoginPage() {
           {/* Логотип */}
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
-             Umeeti
+              Umeeti
             </h1>
           </div>
+
+          {/* Сообщение об ошибке/успехе */}
+          {message && (
+            <div className={`mb-4 p-3 rounded text-sm ${
+              message.includes('✅') ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+            }`}>
+              {message}
+            </div>
+          )}
 
           {/* Форма входа */}
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
               <input
-                name="username"
+                name="login" // Меняем name на login
                 type="text"
                 required
                 placeholder="Телефон, имя пользователя или эл. адрес"
-                value={formData.username}
+                value={formData.login}
                 onChange={handleChange}
                 className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-50"
               />
@@ -63,9 +108,9 @@ export default function LoginPage() {
               <button
                 type="submit"
                 className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                disabled={!formData.username || !formData.password}
+                disabled={loading || !formData.login || !formData.password}
               >
-                Войти
+                {loading ? 'Вход...' : 'Войти'}
               </button>
             </div>
           </form>
