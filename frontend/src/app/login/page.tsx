@@ -29,7 +29,7 @@ export default function LoginPage() {
           {/* Логотип */}
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
-              Instagram
+             Umeeti
             </h1>
           </div>
 
