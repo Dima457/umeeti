@@ -55,5 +55,12 @@ services:
       - register-service
       - entrance-service
 
+      
+frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
 volumes:
   postgres_data:
