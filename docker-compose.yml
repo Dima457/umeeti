@@ -5,7 +5,7 @@ services:
   postgres:
     image: postgres:17
     environment:
-      POSTGRES_DB: dating_app
+      POSTGRES_DB: umeeti
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 123456
     ports:
@@ -23,7 +23,7 @@ services:
       DB_PORT: 5432
       DB_USER: postgres
       DB_PASSWORD: 123456
-      DB_NAME: dating_app
+      DB_NAME: umeeti
       PORT: 8080
     depends_on:
       - postgres
@@ -38,7 +38,7 @@ services:
       DB_PORT: 5432
       DB_USER: postgres
       DB_PASSWORD: 123456
-      DB_NAME: dating_app
+      DB_NAME: umeeti
       PORT: 8081
       JWT_SECRET: your-super-secure-jwt-secret-key-here
     depends_on:

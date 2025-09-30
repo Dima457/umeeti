@@ -66,7 +66,7 @@ func main() {  // Главная функция программы
 
 func createTables(conn *pgx.Conn) error {  // Функция создания таблиц принимает соединение и возвращает ошибку
  // Используем CREATE TABLE IF NOT EXISTS
- usersTable := `  // *SQL запрос для создания таблицы пользователей
+ usersTable := `  -- *SQL запрос для создания таблицы пользователей
  CREATE TABLE IF NOT EXISTS users (
   id SERIAL PRIMARY KEY,
   phone VARCHAR(20) UNIQUE NOT NULL,
@@ -79,24 +79,24 @@ func createTables(conn *pgx.Conn) error {  // Функция создания т
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
  );`
- profilesTable := `   //* SQL запрос для создания таблицы профилей
+ profilesTable := `   --* SQL запрос для создания таблицы профилей
  CREATE TABLE IF NOT EXISTS profiles (
-  id SERIAL PRIMARY KEY,                    // *Автоинкрементный первичный ключ
-  user_id INTEGER REFERENCES users(id),     //* Внешний ключ на таблицу users
-  interests TEXT[],                         // *Массив интересов
-  location VARCHAR(100),                    // *Местоположение
-  looking_for VARCHAR(50),                  // *Кого ищет пользователь
-  is_verified BOOLEAN DEFAULT false         //* Флаг верификации (по умолчанию false)
+  id SERIAL PRIMARY KEY,                    -- *Автоинкрементный первичный ключ
+  user_id INTEGER REFERENCES users(id),     --* Внешний ключ на таблицу users
+  interests TEXT[],                         -- *Массив интересов
+  location VARCHAR(100),                    -- *Местоположение
+  looking_for VARCHAR(50),                  -- *Кого ищет пользователь
+  is_verified BOOLEAN DEFAULT false         --* Флаг верификации (по умолчанию false)
  );`
 
- datingProfilesTable := `   // *SQL запрос для создания таблицы dating профилей
+ datingProfilesTable := `   -- *SQL запрос для создания таблицы dating профилей
  CREATE TABLE IF NOT EXISTS dating_profiles (
-  id SERIAL PRIMARY KEY,                    // *Автоинкрементный первичный ключ
-  user_id INTEGER REFERENCES users(id),     // *Внешний ключ на таблицу users
-  photos TEXT[],                            // *Массив ссылок на фото
-  description TEXT,                         // *Описание профиля
-  is_active BOOLEAN DEFAULT true,           // *Флаг активности (по умолчанию true)
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP  // *Время создания (автоматически)
+  id SERIAL PRIMARY KEY,                    -- *Автоинкрементный первичный ключ
+  user_id INTEGER REFERENCES users(id),     -- *Внешний ключ на таблицу users
+  photos TEXT[],                            -- *Массив ссылок на фото
+  description TEXT,                         -- *Описание профиля
+  is_active BOOLEAN DEFAULT true,           -- *Флаг активности (по умолчанию true)
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP  -- *Время создания (автоматически)
  );`
 
  // *Выполняем создание таблиц
