@@ -62,5 +62,14 @@ frontend:
       - "3000:3000"
     environment:
       PORT: 3000
+
+media-service:
+    build: ./media-service
+    ports:
+      - "8083:8083"
+    environment:
+      PORT: 8083
+    volumes:
+      - ./media-service/uploads:/app/uploads  # Сохраняем файлы локально
 volumes:
   postgres_data:
