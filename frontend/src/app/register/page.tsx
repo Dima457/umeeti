@@ -5,12 +5,12 @@ import Link from 'next/link';
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
-    phone: '+79991234567', // Добавляем телефон
+    phone: '+79991234567', 
     email: '',
-    full_name: '', // Меняем fullName на full_name
+    full_name: '', 
     username: '',
     password: '',
-    password_confirm: '' // Добавляем подтверждение пароля
+    password_confirm: '' 
   });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
@@ -31,7 +31,7 @@ export default function RegisterPage() {
         if(response.ok){
             setMessage('✅ Регистрация успешна!');
             console.log('User registered:', data.user);
-        // Здесь можно сделать redirect на логин
+       
         }else{
             setMessage(`❌ Ошибка: ${data.error || data.details || 'Неизвестная ошибка'}`)
         }
