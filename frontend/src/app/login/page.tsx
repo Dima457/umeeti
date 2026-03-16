@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
-    login: '', // Меняем username на login (для нашего API)
+    login: '', 
     password: '',
   });
   const [loading, setLoading] = useState(false);
@@ -82,7 +82,7 @@ export default function LoginPage() {
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
               <input
-                name="login" // Меняем name на login
+                name="login" 
                 type="text"
                 required
                 placeholder="Телефон, имя пользователя или эл. адрес"
